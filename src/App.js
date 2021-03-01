@@ -1,25 +1,29 @@
-import logo from './logo.svg';
+import React, {Component} from "react";
+import Header from "./components/Header";
+import { Switch, Route } from "react-router-dom";
+import Home from "./pages/Home"
+import Card from "./pages/Card";
 import './App.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component{
+  state={};
+
+  render(){
+    return(
+      <div>
+        <Header/>
+        <div className="pt-5 px-5 mx-5">
+          <Switch>
+            <Route path='/' exact component={Home} />
+            <Route path='/Card' component={Card} />
+          </Switch>
+        </div>
+        <ToastContainer />
+      </div>
+    )
+  }
 }
 
 export default App;
