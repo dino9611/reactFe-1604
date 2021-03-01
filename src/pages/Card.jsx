@@ -14,25 +14,25 @@ class Home2 extends Component {
         foto:
           "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
         judul: "Salad Sayur",
-        caption: "makan teratur",
+        caption: "Makan teratur",
       },
       {
         foto:
           "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/1800x1200_potassium_foods_other.jpg?resize=750px:*",
         judul: "Salad Buah",
-        caption: "makan teratur",
+        caption: "Makan teratur",
       },
       {
         foto:
-          "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/1800x1200_potassium_foods_other.jpg?resize=750px:*",
+          "http://kbu-cdn.com/dk/wp-content/uploads/nasi-goreng-teri.jpg",
         judul: "Nasi Goreng",
-        caption: "makan teratur",
+        caption: "Makan teratur",
       },
       {
         foto:
-          "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/1800x1200_potassium_foods_other.jpg?resize=750px:*",
+          "http://kbu-cdn.com/dk/wp-content/uploads/mie-goreng-korea.jpg",
         judul: "Mie Goreng",
-        caption: "makan teratur",
+        caption: "Makan teratur",
       },
     ],
     fotoInp: "",
