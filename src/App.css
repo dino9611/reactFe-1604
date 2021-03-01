@@ -1,38 +1,19 @@
-.App {
-  text-align: center;
+.Toastify__toast--error {
+  background-color: hotpink !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.bg-modal {
+  background-color: #00917c !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.heart:hover {
+  color: red !important;
+}
+.share:hover {
+  color: rgb(76, 162, 243) !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.icon:hover {
+  cursor: pointer;
+  color: #00917c !important;
 }
