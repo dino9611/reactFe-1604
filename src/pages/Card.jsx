@@ -6,44 +6,21 @@ import swal from 'sweetalert';
 import Card from "./../components/Bcard";
 import ModalComp from "./../components/Modal";
 import { toast } from "react-toastify";
+import Axios from "axios";
 
 class Home2 extends Component {
   state = {
-    data: [
-      {
-        foto:
-          "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        judul: "Salad Sayur",
-        caption: "Makan teratur",
-      },
-      {
-        foto:
-          "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/article_thumbnails/other/1800x1200_potassium_foods_other.jpg?resize=750px:*",
-        judul: "Salad Buah",
-        caption: "Makan teratur",
-      },
-      {
-        foto:
-          "http://kbu-cdn.com/dk/wp-content/uploads/nasi-goreng-teri.jpg",
-        judul: "Nasi Goreng",
-        caption: "Makan teratur",
-      },
-      {
-        foto:
-          "http://kbu-cdn.com/dk/wp-content/uploads/mie-goreng-korea.jpg",
-        judul: "Mie Goreng",
-        caption: "Makan teratur",
-      },
-    ],
+    datas: [],
     fotoInp: "",
     judulInp: "",
     captionInp: "",
     indexdelete: -1,
     indexedit: -1,
     EditData: {
+      id: 0,
       foto: "",
       judul: "",
-      caption: ""
+      caption: "",
     },
     modal: false,
     editmodal: false,
@@ -88,6 +65,16 @@ class Home2 extends Component {
 
   // * cara dengan component
   
+  componentDidMount(){
+    Axios.get(`http://localhost:5100/datas`)
+      .then((res)=>{
+        this.setState({datas: res.data});
+      })
+      .catch((err)=>{
+        toast.error("Internal Server Error!")
+      })
+  }
+
   onFotoChange = (event)=>{
     this.setState({fotoInp: event.target.value})
   }
@@ -109,20 +96,30 @@ class Home2 extends Component {
   onAddClick=()=>{
     const{fotoInp, judulInp, captionInp, data} = this.state;
     if (fotoInp && judulInp && captionInp){
-      let newdata = {
+      let data = {
         foto: fotoInp,
         judul: judulInp,
         caption: captionInp,
       };
-      let usersdata = data;
-      usersdata.push(newdata);
-      this.setState({
-        data: usersdata,
-        fotoInp: "",
-        judulInp: "",
-        captionInp: "",
-        modal: false,
-      });
+      Axios.post(`http://localhost:5100/datas`, data)
+        .then((res1)=>{
+          Axios.get(`http://localhost:5100/datas`)
+            .then((res)=>{
+              this.setState({
+                datas: res.data,
+                fotoInp: "",
+                judulInp: "",
+                captionInp: "",
+                modal: false,
+              })
+            })
+            .catch((err)=>{
+              toast.error("Internal Server Error!")
+            });
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
     }else{
       toast.error("Input harus diisi semua!", {
         position: "top-center",
@@ -143,64 +140,117 @@ class Home2 extends Component {
   onAddCancelClick = ()=>{
     this.setState({modal: false})
   };
-
-  // onDeleteClick = (index)=>{
-  //   this.setState({indexdelete: index})
+ 
+  // onDeleteClick = (index, id) => {
+  //   this.setState({ indexdelete: index });
+  //   swal({
+  //     title: "Anda yakin?",
+  //     text: "Data akan dihapus permanen",
+  //     icon: "warning",
+  //     buttons: true,
+  //     dangerMode: true,
+  //   })
+  //     .then((willDelete) => {
+  //       if (willDelete) {
+  //         swal("Data sudah dihapus", {
+  //           icon: "success",
+  //         });
+  //         Axios.delete(`http://localhost:5100/datas/${id}`)
+  //           .then((res1) => {
+  //             console.log(res1);
+  //             Axios.get(`http://localhost:5100/datas`)
+  //               .then((res) => {
+  //                 console.log(res);
+  //                 this.setState({ datas: res.data, indexdelete: -1 });
+  //               })
+  //               .catch((err) => {
+  //                 console.log(err);
+  //                 toast.error("Internal Server Error");
+  //               });
+  //           })
+  //           .catch((err) => {
+  //             console.log(err);
+  //           });
+  //       } else {
+  //         swal("Tidak jadi dihapus.");
+  //       }
+  //     });
   // };
-  
-  onDeleteClick = (index) => {
-    this.setState({ indexdelete: index });
-    swal({
-      title: "Anda yakin?",
-      text: "Data akan dihapus permanen",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true,
+
+  onDeleteClick = (id)=>{
+    Axios.delete(`http://localhost:5100/datas/${id}`)
+    .then((res1) => {
+      console.log(res1);
+      Axios.get(`http://localhost:5100/datas`)
+        .then((res) => {
+          console.log(res);
+          this.setState({ datas: res.data, indexdelete: -1 });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Internal Server Error");
+        });
     })
-      .then((willDelete) => {
-        if (willDelete) {
-          swal("Data sudah dihapus", {
-            icon: "success",
-          });
-          const { data, indexdelete } = this.state;
-          let usersData = data;
-          usersData.splice(indexdelete, 1);
-          console.log(indexdelete)
-          this.setState({ data: usersData, indexdelete: -1 });
-        } else {
-          swal("Tidak jadi dihapus.");
-        }
-      });
-  };
+    .catch((err) => {
+      console.log(err);
+    });
+  }
 
   onEditClick = (index)=>{
     let EditData = this.state.EditData;
-    let data = this.state.data;
+    let datas = this.state.datas;
     EditData = {
       ...EditData,
-      foto: data[index].foto,
-      judul: data[index].judul,
-      caption: data[index].caption,
+      id: datas[index].id,
+      foto: datas[index].foto,
+      judul: datas[index].judul,
+      caption: datas[index].caption,
     };
     this.setState({indexedit: index, EditData: EditData, editmodal: true});
   }
 
   onEditSaveClick = () => {
-    const { EditData, data, indexedit } = this.state;
-    const { foto, judul, caption } = EditData;
-    if (foto && judul && caption) {
-      let dataEdit = {
+    // const { EditData, data, indexedit } = this.state;
+    // const { foto, judul, caption } = EditData;
+    let id = this.state.EditData.id;
+    let foto = this.state.EditData.foto;
+    let judul = this.state.EditData.judul;
+    let caption = this.state.EditData.caption;
+    if (foto && judul && caption && id){
+      let data = {
         foto: foto,
         judul: judul,
         caption: caption,
       };
-      let dataUser = data;
-      dataUser.splice(indexedit, 1, dataEdit);
-      this.setState({
-        foto: dataUser,
-        indexedit: -1,
-        editmodal: false,
-      })
+      Axios.patch(`http://localhost:5100/datas/${id}`, data)
+        .then((res1)=>{
+          console.log(res1.data);
+          Axios.get(`http://localhost:5100/datas`)
+            .then((res)=>{
+              console.log(res)
+              this.setState({
+                datas: res.data,
+                indexedit: -1,
+                editmodal: false,
+              });
+              toast.success("Berhasil di edit!", {
+                position: "top-center",
+                autoClose: 1500,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+              });
+            })
+            .catch((err)=>{
+              console.log(err);
+              toast.error("Internal Server Error!");
+            })
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
     } else {
       this.setState({
         EditData: {
@@ -209,7 +259,16 @@ class Home2 extends Component {
           caption: "",
         },
         indexedit: -1,
-      })
+      });
+      toast.error("Tidak jadi edit", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+      });
     }
   }
 
@@ -234,11 +293,11 @@ class Home2 extends Component {
   };
 
   renderCard = () => {
-    return this.state.data.map((val, index) => {
+    return this.state.datas.map((val, index) => {
         return (
           <div className="col-md-3" key={index}>
             <Card foto={val.foto} judul={val.judul} caption={val.caption} 
-            Delete={()=> this.onDeleteClick(index)} Edit={()=> this.onEditClick(index)}/>
+            Delete={()=> this.onDeleteClick(val.id)} Edit={()=> this.onEditClick(index)}/>
           </div>
         );
     });
@@ -282,7 +341,7 @@ class Home2 extends Component {
         </ModalComp>
         <ModalComp
            isOpen={this.state.editmodal}
-           toggle={this.toggle}
+           toggle={this.toggleEdit}
            title={"Edit Data"}
            saveData={this.onEditSaveClick}
            Cancel={this.onEditCancelClick}
@@ -299,7 +358,7 @@ class Home2 extends Component {
           <input
             name="judul"
             type="text"
-            placeholder="Alamat foto"
+            placeholder="Masukkan judul"
             className="form-control my-2"
             value={this.state.EditData.judul}
             onChange={this.onInputEditChange}
